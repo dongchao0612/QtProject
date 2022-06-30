@@ -5,7 +5,7 @@
 mylabel::mylabel(QWidget *parent) : QLabel(parent)
 {
     //设置鼠标追踪
-    this->setMouseTracking(true);
+    // this->setMouseTracking(true);
 }
 
 //鼠标进入事件
@@ -21,37 +21,53 @@ void mylabel::leaveEvent(QEvent *event )
     // qDebug()<<"鼠标离开了";
 }
 
-//鼠标移动事件
-void mylabel::mouseMoveEvent(QMouseEvent *event)
+//鼠标按下
+void mylabel::mousePressEvent(QMouseEvent *ev)
 {
- //   if(event->buttons() & Qt::LeftButton)
- //   {
-        QString str=QString("鼠标移动了x = %1, y = %2, globalX = %3, globalY = %4 ")
-                .arg(event->x()).arg(event->y()).arg(event->globalX()).arg(event->globalY());
-        qDebug()<<str.toUtf8().data();
- //   }
-    // qDebug()<<"鼠标移动了";
-}
-//鼠标按压事件
-void mylabel::mousePressEvent(QMouseEvent *event)
-{
- //   if(event->button()==Qt::LeftButton) //位操作
- //   {
-        QString str=QString("鼠标按压了x = %1, y = %2, globalX = %3, globalY = %4 ")
-                .arg(event->x()).arg(event->y()).arg(event->globalX()).arg(event->globalY());
-        qDebug()<<str.toUtf8().data();
- //   }
 
-    // qDebug()<<"鼠标按压了"<<"x = "<<event->x()<<", y = "<<event->y();
+    //当鼠标左键按下  提示信息
+//    if( ev->button() ==  Qt::LeftButton)
+//    {
+        QString str = QString( "鼠标按下了 x = %1   y = %2  globalX = %3 globalY = %4 " ).arg(ev->x()).arg(ev->y()).arg(ev->globalX()).arg(ev->globalY());
+        qDebug() << str;
+//    }
 }
-//鼠标释放事件
-void mylabel::mouseReleaseEvent(QMouseEvent *event)
+
+//鼠标释放
+void mylabel::mouseReleaseEvent(QMouseEvent *ev)
 {
- //   if(event->button()==Qt::LeftButton)
- //   {
-        QString str=QString("鼠标释放了x = %1, y = %2, globalX = %3, globalY = %4 ")
-                .arg(event->x()).arg(event->y()).arg(event->globalX()).arg(event->globalY());
-        qDebug()<<str.toUtf8().data();
- //   }
-    // qDebug()<<"鼠标释放了";
+
+//    if( ev->button() ==  Qt::LeftButton)
+//    {
+        QString str = QString( "鼠标释放了 x = %1   y = %2  globalX = %3 globalY = %4 " ).arg(ev->x()).arg(ev->y()).arg(ev->globalX()).arg(ev->globalY());
+
+        qDebug() << str;
+//    }
+
+}
+
+//鼠标移动
+void mylabel::mouseMoveEvent(QMouseEvent *ev)
+{
+    if( ev->buttons() &   Qt::LeftButton )  //位操作
+    {
+        QString str = QString( "鼠标移动了 x = %1   y = %2  globalX = %3 globalY = %4 " ).arg(ev->x()).arg(ev->y()).arg(ev->globalX()).arg(ev->globalY());
+
+        qDebug() << str;
+   }
+}
+
+bool mylabel::event(QEvent *event)
+{
+    if(event->type() == QEvent::MouseButtonPress)
+    {
+        QMouseEvent * ev  = static_cast<QMouseEvent *>(event);
+        QString str = QString( "Event函数中：：鼠标按下了 x = %1   y = %2  globalX = %3 globalY = %4 " ).arg(ev->x()).arg(ev->y()).arg(ev->globalX()).arg(ev->globalY());
+        qDebug() << str;
+
+        return true; //true代表用户自己处理这个事件，不向下分发
+    }
+
+    //其他事件 交给父类处理  默认处理
+    return QLabel::event(event);
 }
